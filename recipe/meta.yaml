@@ -2,45 +2,49 @@
 {% set version = "0.1.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/simple-azure-blob-downloader-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: e8b07282a4bbd21e56220b5cd8e973ff8a20d0d47f10c348489cc010713d1d23
 
 build:
+  number: 0
+  skip: true  # [py<36]
   entry_points:
     - download-azure-blob = simple_azure_blob_downloader.download_azure_blob:main
-  noarch: python
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 0
 
 requirements:
   host:
-    - python {{ python_min }}
+    - python
     - poetry-core >=1.0.0
     - pip
   run:
-    - python >={{ python_min }}
+    - python
     - azure-identity >=1.10.0
     - azure-storage-blob >=12.12.0
 
+# No tests available in the package.
 test:
   imports:
     - simple_azure_blob_downloader
+  requires:
+    - pip
   commands:
     - pip check
     - download-azure-blob --help
-  requires:
-    - pip
-    - python {{ python_min }}
 
 about:
-  home: 'https://outerbounds.co/'
-  summary: 'Simple Azure blob downloader'
+  home: https://pypi.org/project/simple-azure-blob-downloader/
   license: Apache-2.0
   license_file: LICENSE
+  license_family: Apache
+  summary: Simple Azure blob downloader
+  description: Simple Azure blob downloader
+  dev_url: https://github.com/DavidAnson/azure-blob-container-download
+  doc_url: https://github.com/DavidAnson/azure-blob-container-download/blob/master/README.md
 
 extra:
   recipe-maintainers:
